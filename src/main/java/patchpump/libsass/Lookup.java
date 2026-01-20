@@ -1,4 +1,4 @@
-package wrm.libsass;
+package patchpump.libsass;
 
 import io.bit3.jsass.importer.Import;
 

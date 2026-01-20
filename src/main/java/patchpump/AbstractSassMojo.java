@@ -1,4 +1,4 @@
-package wrm;
+package patchpump;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -31,7 +31,7 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 
 import io.bit3.jsass.CompilationException;
 import io.bit3.jsass.Output;
-import wrm.libsass.SassCompiler;
+import patchpump.libsass.SassCompiler;
 
 public abstract class AbstractSassMojo extends AbstractMojo {
 
@@ -121,13 +121,6 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 	 * @parameter default-value="5"
 	 */
 	private int precision;
-	/**
-	 * Enables classpath aware importer which make possible to <tt>@import</tt>
-	 * files from classpath and WebJars.
-	 *
-	 * @parameter default-value="false"
-	 */
-	private boolean enableClasspathAwareImporter;
 	/**
 	 * should fail the build in case of compilation errors.
 	 *
@@ -253,7 +246,6 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 		compiler.setOmitSourceMappingURL(this.omitSourceMapingURL);
 		compiler.setOutputStyle(this.outputStyle);
 		compiler.setPrecision(this.precision);
-		compiler.setEnableClasspathAwareImporter(this.enableClasspathAwareImporter);
 		return compiler;
 	}
 

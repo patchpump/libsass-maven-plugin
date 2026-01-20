@@ -1,4 +1,4 @@
-package wrm;
+package patchpump;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
@@ -17,16 +17,18 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Watch for changes in inputPath, then compile scss files to outputPath using
  * includePaths
- *
- * @goal watch
  */
+@Mojo(
+    name = "watch",
+    threadSafe = true
+)
 public class WatchMojo extends AbstractSassMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -75,7 +77,7 @@ public class WatchMojo extends AbstractSassMojo {
 				getLog().warn("Watch service interrupted");
 			}
 		} catch (IOException e) {
-			throw new MojoExecutionException("Exception while watching: "+ExceptionUtils.getRootCauseMessage(e), e);
+			throw new MojoExecutionException("Exception while watching: "+e, e);
 		}
 	}
 

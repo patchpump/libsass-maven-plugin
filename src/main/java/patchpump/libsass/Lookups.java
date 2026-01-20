@@ -1,4 +1,4 @@
-package wrm.libsass;
+package patchpump.libsass;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,9 +37,5 @@ class Lookups {
 			default:
 				return Optional.empty();
 		}
-	}
-
-	static Optional<Lookup.Result> findWebJarResource(URI uri, WebJarTranslator translator) {
-		return translator.translate(uri).flatMap(Lookups::findResource);
 	}
 }

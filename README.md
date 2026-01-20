@@ -1,43 +1,94 @@
-Libsass Maven Plugin [![Build Status](https://travis-ci.org/warmuuh/libsass-maven-plugin.svg?branch=master)](https://travis-ci.org/warmuuh/libsass-maven-plugin) [![Maven Central](https://img.shields.io/maven-central/v/com.github.warmuuh/libsass-maven-plugin.svg)](https://mvnrepository.com/artifact/com.github.warmuuh/libsass-maven-plugin)
+Libsass Maven Plugin
 ==========
 
-Libsass Maven Plugin uses [libsass](http://github.com/hcatlin/libsass) to compile sass files.
-Uses [jsass](https://github.com/bit3/jsass) to interface with C-library.
+Uses [jsass](https://github.com/bit3/jsass) to interface with libsass C-library.
 
-Changelog:
-* 0.2.10 - upgraded libsass to 3.5.3
-* 0.2.9 - upgraded libsass to 3.4.7
-  * refreshed output files for eclipse
-  * enhanced error output with failing files - thanks to @VsevolodGolovanov
-* 0.2.8 - upgraded libsass to 3.4.4
-  * used compilation classpath for including webjars
-  * fixed issue with os-dependent path-separator (using ';' for every OS)
-  * plugin now aware of incremental builds
-* 0.2.7 - upgraded libsass to 3.4.3
-  * added webjar support - thanks to @flipp5b 
-* 0.2.6 - upgraded libsass to 3.4.0
-  * added libsass:watch goal to watch and recompile include directory - *thansk to @lorenzodee*
-* 0.2.5 - added copySourceToOutput, changed default outputstyle to 'nested', upgraded libsass to 3.3.6
-* 0.2.4 - fixed bug with empty spaces in path
-* 0.2.3 - upgrade to libsass 3.3.4
-* 0.2.2 - minor bugfixes, readded m2e lifecycle mapping 
-* 0.2.1 - updated libsass to 3.3.3
-* 0.2.0 - switched native bindings to bit3 bindings (using libsass 3.3.2), **java8-only**
-* 0.1.7 - UTF8 encoding issue, used wrong file extension for sass style
-* 0.1.6 - added m2e eclipse intergation, thanks @dashorst
-* 0.1.5 - readded macOs binaries, thanks @tommix1987
-* 0.1.4 - added contained libsass-version to artifact-version (e.g. `0.1.4-libsass_3.2.4-SNAPSHOT`). 
-  * switched to new libsass API (sass_context.h)
-  * removed image_path option (because of [#420](https://github.com/sass/libsass/issues/420))
-  * added failOnError flag to skip errors and continue the build, if wanted
-* 0.1.3 - fixed #10 - multi-module projects
-* 0.1.2 - added PR #4, updated to libsass version 3.1 for windows, linux, macos - *thanks to @npiguet, @ogolberg*
-* 0.1.1 - scss files can now be placed in inputpath/ directly
-* 0.1.0 - changed artefact group to `com.github.warmuuh`
+## Changelog
 
-Installation
------
-libsass-maven-plugin is available on central-repository since version 0.1.2
+**0.2.10-PATCHPUMP-R0**
+- Upgrade to **jsass 5.11.1** (libsass **3.6.6**)
+- Remove **susy** and **webjar** lookups
+- **JDK 17** and **Maven 3.9**
+
+**0.2.10**
+- Upgrade libsass to **3.5.3**
+
+**0.2.9**
+- Upgrade libsass to **3.4.7**
+- Refresh output files for Eclipse
+- Enhance error output with failing files  
+  *(thanks to @VsevolodGolovanov)*
+
+**0.2.8**
+- Upgrade libsass to **3.4.4**
+- Use compilation classpath for including webjars
+- Fix OS-dependent path separator issues
+- Plugin is now aware of incremental builds
+
+**0.2.7**
+- Upgrade libsass to **3.4.3**
+- Add webjar support  
+  *(thanks to @flipp5b)*
+
+**0.2.6**
+- Upgrade libsass to **3.4.0**
+- Add `libsass:watch` goal to watch and recompile include directories  
+  *(thanks to @lorenzodee)*
+
+**0.2.5**
+- Add `copySourceToOutput`
+- Change default output style to `nested`
+- Upgrade libsass to **3.3.6**
+
+**0.2.4**
+- Fix bug with empty spaces in paths
+
+**0.2.3**
+- Upgrade libsass to **3.3.4**
+
+**0.2.2**
+- Minor bug fixes
+- Re-add m2e lifecycle mapping
+
+**0.2.1**
+- Upgrade libsass to **3.3.3**
+
+**0.2.0**
+- Switch native bindings to **bit3** bindings (libsass **3.3.2**)
+- **Java 8 only**
+
+**0.1.7**
+- Fix UTF-8 encoding issue
+- Fix wrong file extension for sass style
+
+**0.1.6**
+- Add m2e Eclipse integration  
+  *(thanks to @dashorst)*
+
+**0.1.5**
+- Re-add macOS binaries  
+  *(thanks to @tommix1987)*
+
+**0.1.4**
+- Include libsass version in artifact version  
+  (e.g. `0.1.4-libsass_3.2.4-SNAPSHOT`)
+- Switch to new libsass API (`sass_context.h`)
+- Remove `image_path` option (libsass issue #420)
+- Add `failOnError` flag to continue build on errors
+
+**0.1.3**
+- Fix multi-module project handling (#10)
+
+**0.1.2**
+- Update libsass to **3.1** (Windows, Linux, macOS)
+- Merge PR #4  
+  *(thanks to @npiguet, @ogolberg)*
+
+**0.1.1**
+- Allow `.scss` files directly in `inputPath/`
+
+**0.1.0**
+- Change artifact group to `com.github.warmuuh`
 
 Usage
 -----
@@ -49,7 +100,7 @@ Configure plugin in your pom.xml:
       <plugin>
          <groupId>com.github.warmuuh</groupId>
          <artifactId>libsass-maven-plugin</artifactId>
-         <version><VERSION>-libsass_3.4.4</version>
+         <version>0.2.10-PATCHPUMP-R0</version>
          <executions>
             <execution>
                <phase>generate-resources</phase>
@@ -70,7 +121,7 @@ Configure plugin in your pom.xml:
 
 Alternatively, you can use the `watch` goal to have the plugin watch your files and recompile on change:
 ```
-mvn com.github.warmuuh:libsass-maven-plugin:<version>-libsass_3.4.4:watch
+mvn com.github.warmuuh:libsass-maven-plugin:0.2.10-PATCHPUMP-R0:watch
 ```
 
 Configuration Elements
@@ -172,16 +223,6 @@ Configuration Elements
       <td><code>5</code></td>
       <td>
        Precision for fractional numbers
-      </td>
-    </tr>
-    <tr>
-      <td>enableClasspathAwareImporter</td>
-      <td><code>false</code></td>
-      <td>
-       Enables classpath aware importer which make possible to <code>@import</code> files from classpath and WebJars.
-       For classpath resources use <code>@import 'path/to/resource/in/classpath';</code>.
-       For WebJar resources a shortcut can be used: <code>@import '{package}/{path}';</code> imports resource
-       <code>META-INF/resources/webjars/{package}/{version}/{path}</code>.
       </td>
     </tr>
      <tr>

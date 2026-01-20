@@ -1,15 +1,20 @@
-package wrm;
+package patchpump;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Compilation of all scss files from inputpath to outputpath using includePaths
- *
- * @goal compile
- * @phase generate-resources
- * @requiresDependencyResolution compile
  */
+@Mojo(
+    name = "compile",
+    defaultPhase = LifecyclePhase.GENERATE_RESOURCES,
+    requiresDependencyResolution = ResolutionScope.COMPILE,
+    threadSafe = true
+)
 public class CompilationMojo extends AbstractSassMojo {
 
 	/**

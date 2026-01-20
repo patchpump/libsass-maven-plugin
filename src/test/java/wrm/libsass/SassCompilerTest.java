@@ -1,10 +1,11 @@
-package test;
+package wrm.libsass;
 
 import io.bit3.jsass.Output;
 import io.bit3.jsass.OutputStyle;
+import patchpump.libsass.SassCompiler;
+
 import org.junit.Before;
 import org.junit.Test;
-import wrm.libsass.SassCompiler;
 
 import static org.junit.Assert.*;
 
@@ -30,7 +31,6 @@ public class SassCompilerTest {
 		compiler.setGenerateSourceComments(false);
 		compiler.setGenerateSourceMap(true);
 		compiler.setIncludePaths(null);
-		compiler.setEnableClasspathAwareImporter(true);
 	}
 
 	@Test
@@ -124,17 +124,6 @@ public class SassCompilerTest {
 		assertCssContains(".something{padding:0 0.8em .7142857143 0.8em}");
 	}
 
-	@Test
-	public void testWebJar() throws Exception {
-		compile("/webjar-test.scss");
-
-		assertCssContains("*, *::before, *::after {\n" +
-				"  -moz-box-sizing: border-box;\n" +
-				"  -webkit-box-sizing: border-box;\n" +
-				"  box-sizing: border-box;\n" +
-				"}");
-	}
-
 	private void compile(String file) throws Exception {
 		String absolutePath = new java.io.File(getClass().getResource(file).getFile()).getAbsolutePath();
 		out = compiler.compileFile(absolutePath, "prout", "denver");
@@ -154,17 +143,5 @@ public class SassCompilerTest {
 		String css = out.getCss();
 		String formatted = replaceNewLines(unwanted);
 		assertFalse("Generated CSS contains: " + formatted + "\n" + css, css.contains(formatted));
-	}
-
-	private void assertMapContains(String expected){
-		String sourceMap = out.getSourceMap();
-		String formatted = replaceNewLines(expected);
-		assertTrue("Generated SourceMap does not contain: " + formatted + "\n" + sourceMap, sourceMap.contains(formatted));
-	}
-
-	private void assertMapDoesNotContain(String unwanted){
-		String sourceMap = out.getSourceMap();
-		String formatted = replaceNewLines(unwanted);
-		assertFalse("Generated SourceMap contains: " + formatted + "\n" + sourceMap, sourceMap.contains(formatted));
 	}
 }
