@@ -26,8 +26,8 @@ import org.apache.maven.plugins.annotations.Mojo;
  * includePaths
  */
 @Mojo(
-    name = "watch",
-    threadSafe = true
+	name = "watch",
+	threadSafe = true
 )
 public class WatchMojo extends AbstractSassMojo {
 
@@ -110,5 +110,4 @@ public class WatchMojo extends AbstractSassMojo {
 			}
 		});
 	}
-
 }

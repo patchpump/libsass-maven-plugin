@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
@@ -127,34 +128,26 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 	 * @parameter default-value="true"
 	 */
 	protected boolean failOnError;
-	
-    /**
-     * Copy source files to output directory.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean copySourceToOutput;
-
-    /**
+	/**
+	 * Copy source files to output directory.
+	 *
+	 * @parameter default-value="false"
+	 */
+	private boolean copySourceToOutput;
+	/**
 	 * @parameter property="project"
 	 * @required
 	 * @readonly
 	 */
 	protected MavenProject project;
 
-	/**
-	 * @component
-	 */
+	@Parameter(defaultValue = "${buildContext}", readonly = true)
 	protected BuildContext buildContext;
 
 	protected SassCompiler compiler;
 
 	private static final Pattern PATTERN_ERROR_JSON_LINE = Pattern.compile("[\"']line[\"'][:\\s]+([0-9]+)");
 	private static final Pattern PATTERN_ERROR_JSON_COLUMN = Pattern.compile("[\"']column[\"'][:\\s]+([0-9]+)");
-
-	public AbstractSassMojo() {
-		super();
-	}
 
 	protected void compile() throws Exception {
 		final Path root = project.getBasedir().toPath().resolve(Paths.get(inputPath));

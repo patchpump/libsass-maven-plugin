@@ -10,10 +10,10 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * Compilation of all scss files from inputpath to outputpath using includePaths
  */
 @Mojo(
-    name = "compile",
-    defaultPhase = LifecyclePhase.GENERATE_RESOURCES,
-    requiresDependencyResolution = ResolutionScope.COMPILE,
-    threadSafe = true
+	name = "compile",
+	defaultPhase = LifecyclePhase.GENERATE_RESOURCES,
+	requiresDependencyResolution = ResolutionScope.COMPILE,
+	threadSafe = true
 )
 public class CompilationMojo extends AbstractSassMojo {
 

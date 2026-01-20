@@ -31,8 +31,8 @@ public class SassCompiler {
 
 	) throws CompilationException {
 
-		String inputOmitSpace = inputPathAbsolute.replaceAll("%20", " ");
-		String outputOmitSpace = outputPathRelativeToInput.replaceAll("%20", " ");
+		String inputOmitSpace = inputPathAbsolute.replace("%20", " ");
+		String outputOmitSpace = outputPathRelativeToInput.replace("%20", " ");
 
 		URI inputFile = new File(inputOmitSpace).toURI();
 		URI outputFile = new File(outputOmitSpace).toURI();
@@ -112,7 +112,7 @@ public class SassCompiler {
 		this.outputStyle = io.bit3.jsass.OutputStyle.values()[outputStyle.ordinal()];
 	}
 
-	public static enum OutputStyle {
+	public enum OutputStyle {
 		nested, expanded, compact, compressed
 	}
 
