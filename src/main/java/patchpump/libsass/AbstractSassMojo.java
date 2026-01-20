@@ -1,4 +1,4 @@
-package patchpump;
+package patchpump.libsass;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -28,128 +28,67 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.sonatype.plexus.build.incremental.BuildContext;
 
 import io.bit3.jsass.CompilationException;
 import io.bit3.jsass.Output;
-import patchpump.libsass.SassCompiler;
 
 public abstract class AbstractSassMojo extends AbstractMojo {
 
-	/**
-	 * The directory in which the compiled CSS files will be placed. The default value is
-	 * <tt>${project.build.directory}</tt>
-	 *
-	 * @parameter property="project.build.directory"
-	 * @required
-	 */
+	@Parameter(property = "project.build.directory", required = true)
 	protected File outputPath;
-	/**
-	 * The directory from which the source .scss files will be read. This directory will be
-	 * traversed recursively, and all .scss files found in this directory or subdirectories
-	 * will be compiled. The default value is <tt>src/main/sass</tt>
-	 *
-	 * @parameter default-value="src/main/sass"
-	 */
+
+	@Parameter(defaultValue = "src/main/sass")
 	protected String inputPath;
-	/**
-	 * Additional include path, ';'-separated. The default value is <tt>null</tt>
-	 *
-	 * @parameter
-	 */
+
+	@Parameter
 	protected String includePath;
-	/**
-	 * Output style for the generated css code. One of <tt>nested</tt>, <tt>expanded</tt>,
-	 * <tt>compact</tt>, <tt>compressed</tt>. Note that as of libsass 3.1, <tt>expanded</tt>
-	 * and <tt>compact</tt> are the same as <tt>nested</tt>. The default value is
-	 * <tt>nested</tt>.
-	 *
-	 * @parameter default-value="nested"
-	 */
+
+	@Parameter(defaultValue = "nested")
 	private SassCompiler.OutputStyle outputStyle;
-	/**
-	 * Emit comments in the compiled CSS indicating the corresponding source line. The default
-	 * value is <tt>false</tt>
-	 *
-	 * @parameter default-value="false"
-	 */
+
+	@Parameter(defaultValue = "false")
 	private boolean generateSourceComments;
-	/**
-	 * Generate source map files. The generated source map files will be placed in the directory
-	 * specified by <tt>sourceMapOutputPath</tt>. The default value is <tt>true</tt>.
-	 *
-	 * @parameter default-value="true"
-	 */
+
+	@Parameter(defaultValue = "true")
 	private boolean generateSourceMap;
-	/**
-	 * The directory in which the source map files that correspond to the compiled CSS will be
-	 * placed. The default value is <tt>${project.build.directory}</tt>
-	 *
-	 * @parameter property="project.build.directory"
-	 */
+
+	@Parameter(property = "project.build.directory")
 	private String sourceMapOutputPath;
-	/**
-	 * Prevents the generation of the <tt>sourceMappingURL</tt> special comment as the last
-	 * line of the compiled CSS. The default value is <tt>false</tt>.
-	 *
-	 * @parameter default-value="false"
-	 */
+
+	@Parameter(defaultValue = "false")
 	private boolean omitSourceMapingURL;
-	/**
-	 * Embeds the whole source map data directly into the compiled CSS file by transforming
-	 * <tt>sourceMappingURL</tt> into a data URI. The default value is <tt>false</tt>.
-	 *
-	 * @parameter default-value="false"
-	 */
+
+	@Parameter(defaultValue = "false")
 	private boolean embedSourceMapInCSS;
-	/**
-	 * Embeds the contents of the source .scss files in the source map file instead of the
-	 * paths to those files. The default value is <tt>false</tt>
-	 *
-	 * @parameter default-value="false"
-	 */
+
+	@Parameter(defaultValue = "false")
 	private boolean embedSourceContentsInSourceMap;
-	/**
-	 * Switches the input syntax used by the files to either <tt>sass</tt> or <tt>scss</tt>.
-	 * The default value is <tt>scss</tt>.
-	 *
-	 * @parameter default-value="scss"
-	 */
+
+	@Parameter(defaultValue = "scss")
 	private SassCompiler.InputSyntax inputSyntax;
-	/**
-	 * Precision for fractional numbers. The default value is <tt>5</tt>.
-	 *
-	 * @parameter default-value="5"
-	 */
+
+	@Parameter(defaultValue = "5")
 	private int precision;
-	/**
-	 * should fail the build in case of compilation errors.
-	 *
-	 * @parameter default-value="true"
-	 */
+
+	@Parameter(defaultValue = "true")
 	protected boolean failOnError;
-	/**
-	 * Copy source files to output directory.
-	 *
-	 * @parameter default-value="false"
-	 */
+
+	@Parameter(defaultValue = "false")
 	private boolean copySourceToOutput;
-	/**
-	 * @parameter property="project"
-	 * @required
-	 * @readonly
-	 */
+
+	@Parameter(property = "project", required = true, readonly = true)
 	protected MavenProject project;
 
 	@Parameter(defaultValue = "${buildContext}", readonly = true)
-	protected BuildContext buildContext;
+	protected Object buildContext;
 
-	protected SassCompiler compiler;
+	private SassCompiler compiler;
 
 	private static final Pattern PATTERN_ERROR_JSON_LINE = Pattern.compile("[\"']line[\"'][:\\s]+([0-9]+)");
 	private static final Pattern PATTERN_ERROR_JSON_COLUMN = Pattern.compile("[\"']column[\"'][:\\s]+([0-9]+)");
 
-	protected void compile() throws Exception {
+	protected void compile() throws IOException {
+
 		final Path root = project.getBasedir().toPath().resolve(Paths.get(inputPath));
 		String fileExt = getFileExtension();
 		String globPattern = "glob:{**/,}*."+fileExt;
@@ -180,7 +119,7 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 		getLog().info("Compiled " + fileCount + " files");
 		if (errorCount.get() > 0) {
 			if (failOnError) {
-				throw new Exception("Failed with " + errorCount.get() + " errors");
+				throw new IOException("Failed with " + errorCount.get() + " errors");
 			} else {
 				getLog().error("Failed with " + errorCount.get() + " errors. Continuing due to failOnError=false.");
 			}
@@ -226,10 +165,11 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 		}
 	}
 
-	protected SassCompiler initCompiler() {
+	protected void initCompiler() {
+
 		setCompileClasspath();
 		
-		SassCompiler compiler = new SassCompiler();
+		compiler = new SassCompiler();
 		compiler.setEmbedSourceMapInCSS(this.embedSourceMapInCSS);
 		compiler.setEmbedSourceContentsInSourceMap(this.embedSourceContentsInSourceMap);
 		compiler.setGenerateSourceComments(this.generateSourceComments);
@@ -239,7 +179,6 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 		compiler.setOmitSourceMappingURL(this.omitSourceMapingURL);
 		compiler.setOutputStyle(this.outputStyle);
 		compiler.setPrecision(this.precision);
-		return compiler;
 	}
 
 	protected boolean processFile(Path inputRootPath, Path inputFilePath) throws IOException {
@@ -260,10 +199,9 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 			Path inputOutputPath = outputRootPath.resolve(relativeInputPath);
 			inputOutputPath.toFile().mkdirs();
 			Files.copy(inputFilePath, inputOutputPath, REPLACE_EXISTING);
-			buildContext.refresh(inputOutputPath.toFile());
+			refresh(inputOutputPath.toFile());
 			inputFilePath = inputOutputPath;
 		}
-		
 		
 		Output out;
 		try {
@@ -301,7 +239,7 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 						getLog().debug(e1);
 					}
 			}
-			buildContext.addMessage(inputFilePath.toFile(), line, column, e.getErrorMessage(), BuildContext.SEVERITY_ERROR, e);
+			addMessage(inputFilePath.toFile(), line, column, e.getErrorMessage(), e);
 
 			return false;
 		}
@@ -328,8 +266,56 @@ public abstract class AbstractSassMojo extends AbstractMojo {
 			if (os != null)
 				os.close();
 		}
-		buildContext.refresh(outputFilePath.toFile());
+		refresh(outputFilePath.toFile());
 		getLog().debug("Written to: " + f);
 	}
 
+	private void addMessage(File file, int line, int column, String message, Throwable error) {
+
+		if (buildContext == null)
+			return;
+
+		try {
+			buildContext.getClass().getMethod("addMessage", File.class, int.class, int.class, String.class,
+				int.class, Throwable.class).invoke(buildContext, file, line, column, message, 2, error);
+		} catch (ReflectiveOperationException ignored) {
+		}
+	}
+	protected boolean isIncremental() {
+		if (buildContext == null)
+			return false;
+
+		try {
+			return (Boolean) buildContext.getClass()
+					.getMethod("isIncremental")
+					.invoke(buildContext);
+		} catch (ReflectiveOperationException e) {
+			return false;
+		}
+	}
+
+	protected boolean hasDelta(String file) {
+		if (buildContext == null) {
+			return true;
+		}
+		try {
+			return (Boolean) buildContext.getClass()
+					.getMethod("hasDelta", File.class)
+					.invoke(buildContext, file);
+		} catch (ReflectiveOperationException e) {
+			return true;
+		}
+	}
+
+	protected void refresh(File file) {
+		if (buildContext == null) {
+			return;
+		}
+		try {
+			buildContext.getClass()
+					.getMethod("refresh", File.class)
+					.invoke(buildContext, file);
+		} catch (ReflectiveOperationException ignored) {
+		}
+	}
 }

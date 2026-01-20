@@ -1,4 +1,4 @@
-package patchpump;
+package patchpump.libsass;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
@@ -33,7 +33,7 @@ public class WatchMojo extends AbstractSassMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		validateConfig();
-		compiler = initCompiler();
+		initCompiler();
 
 		inputPath = inputPath.replaceAll("\\\\", "/");
 

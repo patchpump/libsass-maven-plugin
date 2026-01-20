@@ -1,4 +1,4 @@
-package patchpump;
+package patchpump.libsass;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -32,10 +32,9 @@ public class CompilationMojo extends AbstractSassMojo {
 	
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		validateConfig();
-		if ((buildContext!=null) && 
-				(!buildContext.isIncremental() || (buildContext.hasDelta(getRelativeInputPath())))) {
+		if ((buildContext!=null) && (!isIncremental() || (hasDelta(getRelativeInputPath())))) {
 
-			compiler = initCompiler();
+			initCompiler();
 
 			inputPath = inputPath.replaceAll("\\\\", "/");
 
